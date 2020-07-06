@@ -1,20 +1,5 @@
-# Douglas González Parra, grupo 01
+#!/usr/bin/python
 
-# Tarea 4 modelos probabilisticos de señales y sistemas ie0405
-
-
-# Nota: Se encuentran dos archivos que pueden ejecutar el código con la solución del la tarea
-# El archivo Tarea_4.ipynb se pude ejecutar utilizando JupyterLab, mientras que el archivo Tarea_4.py
-# se ejecuta otorgandole permisos de ejecución y el comando ./Tarea_4.py, en terminal, en sistemas compatibles
-# con ubuntu 18.04 LTS.
-# Las imagenes de las gráficas generadas se encuentran en la carpeta img
-
-# Situación 
-
-En el archivo bits10k.csv se encuentran 10.000 bits (actualizado) generados a partir de una fuente binaria equiprobable. El objetivo es hacer una modulación digital para "transmitir" estos datos por un canal ruidoso. La modulación se hace con una frecuencia en la portadora de f=5000 Hz y con un período de símbolo igual a un período completo de la onda portadora.
-
-
-```python
 # Douglas González Parra, grupo 01
 
 # Tarea 4 modelos probabilisticos de señales y sistemas ie0405
@@ -38,16 +23,10 @@ N = len(bits10k) # cantidad de bits
 newbits10k=np.zeros(bits10k.shape)
 for i in range(0,10000):
     newbits10k[i]= bits10k.loc[i,0]
-```
+    
+###########################################################################################################
+###########################################################################################################
 
-1. Crear un esquema de modulación BPSK para los bits presentados. Esto implica asignar una forma de 
-onda sinusoidal normalizada (amplitud unitaria) para cada bit y luego una concatenación de todas 
-estas formas de onda.
-
-BPSK es una modulación que emplea un desplazamiento de fase binaria. Empleando dos fases de salida para una frecuencia de la portadora, donde se emplea una fase de 0 grados para indicar 1 bit y una fase de 180 grados para indicar 0 bit. 
-
-
-```python
 # 1. Crear un esquema de modulación BPSK para los bits presentados. Esto implica asignar una forma de 
 # onda sinusoidal normalizada (amplitud unitaria) para cada bit y luego una concatenación de todas 
 # estas formas de onda.
@@ -103,33 +82,10 @@ plt.savefig('img/Tx.png')
 # Imprime primeros 7 bits a transmitir
 print('Primeros 7 bits de la señal a transmitir')
 print(newbits10k[0:7])
-```
 
-    Primeros 7 bits de la señal a transmitir
-    [[0.]
-     [1.]
-     [0.]
-     [1.]
-     [0.]
-     [1.]
-     [1.]]
+###########################################################################################################
+###########################################################################################################
 
-
-
-![png](output_4_1.png)
-
-
-
-![png](output_4_2.png)
-
-
-2. Calcular la potencia promedio de la señal modulada generada.
-
-La potencia promedio en una función periódica es la integral de la función de potencia de 
-tiempo durante un periodo completo, dividido entre el periodo, en unidades de Watts
-
-
-```python
 # 2. Calcular la potencia promedio de la señal modulada generada.
 
 # Potencia instantánea
@@ -142,18 +98,10 @@ a_float = Ps
 formatted_float = "{:.4f}".format(a_float)
 
 print('La potencia promedio de la señal modulada es: ', formatted_float, '[W]')
-```
 
-    La potencia promedio de la señal modulada es:  0.4975 [W]
+###########################################################################################################
+###########################################################################################################
 
-
-3. Simular un canal ruidoso del tipo AWGN (ruido aditivo blanco gaussiano) con una relación señal a ruido (SNR) desde -2 hasta 3 dB.
-
-Se solicita una relación de SNR desde -2 hasta 3 dB, -2 db sería el peor caso tomando ese intervalo, entre menor es el SNR, mas ruido posee la señal,
-se útiliza un SNR de -2 para simular un peor caso.
-
-
-```python
 # 3.Simular un canal ruidoso del tipo AWGN (ruido aditivo blanco gaussiano) con una relación señal a ruido (SNR) desde -2 hasta 3 dB.
 
 # Relación señal-a-ruido deseada
@@ -225,16 +173,10 @@ ax5.set_xlabel('Tiempo / s')
 ax5.set_title('Señal con ruido gaussiano, SNR = 3 dB');
 
 plt.savefig('img/senal_ruido.png')
-```
 
+###########################################################################################################
+###########################################################################################################
 
-![png](output_10_0.png)
-
-
-4. Graficar la densidad espectral de potencia de la señal con el método de Welch (SciPy), antes y después del canal ruidoso.
-
-
-```python
 # 4. Graficar la densidad espectral de potencia de la señal con el método de Welch (SciPy), antes y después del canal ruidoso.
 
 # Antes del canal con ruido
@@ -306,53 +248,10 @@ plt.xlabel('Frecuencia / Hz')
 plt.ylabel('Densidad espectral de potencia / V**2/Hz')
 plt.savefig('img/Densidad_potencia_despues_canal_3dB.png')
 plt.show()
-```
 
+###########################################################################################################
+###########################################################################################################
 
-![png](output_12_0.png)
-
-
-
-![png](output_12_1.png)
-
-
-
-![png](output_12_2.png)
-
-
-
-![png](output_12_3.png)
-
-
-
-![png](output_12_4.png)
-
-
-
-![png](output_12_5.png)
-
-
-
-![png](output_12_6.png)
-
-
-AL analizar las gráficas de densidad espectral de potencia, se puede ver como la potencia se da con mayor intensidad de forma cercano a los 5000 Hz,
-y antes del canl decae de forma mas distribuida, mientras que despúes del canal se atenua mas.
-
-5. Demodular y decodificar la señal y hacer un conteo de la tasa de error de bits (BER, bit error rate) para cada nivel SNR.
-
-Se emplea una recuperación coherente, donde se detecta y regenera una señal de portadora que es coherente, tanto en fase como en frecuencia, con la portadora original de transmisión. 
-
-Se calcula el producto interno de la señal Rx recibida con la función portadora, si el valor de dicho producto internor es mayor a la 
-Pseudo-energía/2, se decodifica como 1, si es menor a Pseudo-energía/2 se decodifica un 0.
-
-El error se calcula como expectativa teórica, o matemática, de que determinado sistema
-tenga una tasa de errores. Es decir para una cantidad determinada de bits transmitidos, cuantos se transmiten de forma correcta.
-
-Mientras que bit error rate (BER) o tasa de error de bits, es el error entre el total de bits que se transmiten.
-
-
-```python
 # 5. Demodular y decodificar la señal y hacer un conteo de la tasa de error de bits (BER, bit error rate) para cada nivel SNR.
 
 # Inicializar el array para almacenar los bits recibidos en Rx.
@@ -458,26 +357,9 @@ print('Para un SNR = 2 dB, se obtiene un BER=', BER2)
 BER3 = error3/N # SNR = 3 dB
 print('Para un SNR = 3 dB, se obtiene un BER=', BER3)
 
-```
+###########################################################################################################
+###########################################################################################################
 
-    El error para un SNR = -2 dB es 1.0
-    El error para un SNR = -1 dB es 1.0
-    El error para un SNR = 0 dB es 1.0
-    El error para un SNR = 1 dB es 1.0
-    El error para un SNR = 2 dB es 1.0
-    El error para un SNR = 3 dB es 1.0
-    Para un SNR = -2 dB, se obtiene un BER= 0.0001
-    Para un SNR = -1 dB, se obtiene un BER= 0.0001
-    Para un SNR = 0 dB, se obtiene un BER= 0.0001
-    Para un SNR = 1 dB, se obtiene un BER= 0.0001
-    Para un SNR = 2 dB, se obtiene un BER= 0.0001
-    Para un SNR = 3 dB, se obtiene un BER= 0.0001
-
-
-5. Graficar BER versus SNR.
-
-
-```python
 # 6. Graficar BER versus SNR.
 
 # BER VS SNR
@@ -490,10 +372,3 @@ plt.xlabel('SNR / dB')
 plt.ylabel('BER')
 plt.savefig('img/BERvsSNR.png')
 plt.show()
-```
-
-
-![png](output_18_0.png)
-
-
-El BPSK, posee un mismo error, y un mismo BER, con una relación señal a ruido (SNR) desde -2 hasta 3 dB, para los 10000 bits transmitidos. 
